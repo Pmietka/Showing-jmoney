@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Patrick Mietka - Finance student, founder, and operator building real businesses from Chicago.">
+  <title>Patrick Mietka</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #0e0e0e;
+      --surface-2: #141414;
+      --surface-3: #1c1c1c;
+      --accent: #F0A500;
+      --accent-dim: rgba(240, 165, 0, 0.07);
+      --accent-border: rgba(240, 165, 0, 0.22);
+      --accent-glow: rgba(240, 165, 0, 0.12);
+      --text: #f0f0f0;
+      --text-muted: #5e5e5e;
+      --text-soft: #999;
+      --text-dim: #3a3a3a;
+      --border: rgba(255, 255, 255, 0.055);
+      --border-hover: rgba(255, 255, 255, 0.1);
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.65;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface-3); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* CURSOR */
+    #cur-dot {
+      position: fixed;
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10001;
+      transform: translate(-50%, -50%);
+      transition: width 0.15s, height 0.15s;
+      will-change: left, top;
+    }
+    #cur-ring {
+      position: fixed;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(240,165,0,0.35);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s var(--ease), height 0.2s var(--ease), border-color 0.2s;
+      will-change: left, top;
+    }
+    body.cursor-hover #cur-dot { width: 14px; height: 14px; }
+    body.cursor-hover #cur-ring { width: 56px; height: 56px; border-color: rgba(240,165,0,0.18); }
+
+    /* CANVAS */
+    #cv {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* GRAIN OVERLAY */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+    }
+
+    /* LAYOUT */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    section { position: relative; z-index: 2; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      padding: 1.75rem 0;
+      transition: padding 0.5s var(--ease), background 0.5s var(--ease), border-color 0.5s var(--ease);
+      border-bottom: 1px solid transparent;
+    }
+    nav.s {
+      padding: 1rem 0;
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom-color: var(--border);
+    }
+    .nav-row { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo b { color: var(--accent); font-weight: 700; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.25s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.25s var(--ease);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* HAMBURGER */
+    .ham {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: none;
+      padding: 4px;
+    }
+    .ham span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--text);
+      transition: transform 0.3s var(--ease), opacity 0.3s;
+    }
+    .ham.on span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .ham.on span:nth-child(2) { opacity: 0; }
+    .ham.on span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .mob-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,8,8,0.97);
+      z-index: 899;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+    }
+    .mob-menu.on { display: flex; }
+    .mob-menu a {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+    }
+    .mob-menu a:hover { color: var(--accent); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10rem 0 5rem;
+    }
+
+    /* Ambient hero glow */
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      right: 5%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(240,165,0,0.045) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.25rem;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fuUp 0.7s var(--ease) 0.2s forwards;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-name {
+      font-family: var(--font-head);
+      font-size: clamp(4.5rem, 13vw, 11rem);
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fuUp 0.8s var(--ease) 0.4s forwards;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-name .stroke {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(240,165,0,0.4);
+    }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      margin-bottom: 1rem;
+      min-height: 2em;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fuUp 0.7s var(--ease) 0.65s forwards;
+      position: relative;
+      z-index: 1;
+    }
+    .tw-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-left: 1px;
+      animation: blink 1s step-end infinite;
+    }
+
+    .hero-meta {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fuUp 0.7s var(--ease) 0.8s forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fuUp 0.7s var(--ease) 0.95s forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-p {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.25rem;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s, transform 0.25s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-p::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-101%);
+      transition: transform 0.3s var(--ease);
+    }
+    .btn-p:hover::after { transform: translateX(0); }
+
+    .btn-s {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.25rem;
+      border: 1px solid var(--border-hover);
+      color: var(--text-soft);
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-s:hover { border-color: var(--accent); color: var(--accent); }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeIn 1.2s ease 1.6s forwards;
+    }
+    .scroll-label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); }
+    .scroll-bar {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: spulse 2s ease-in-out infinite;
+    }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 0;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .mq-track {
+      display: flex;
+      gap: 0;
+      animation: mq 28s linear infinite;
+      width: max-content;
+    }
+    .mq-item {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 0 2rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .mq-dot {
+      color: var(--accent);
+      font-size: 0.4rem;
+      vertical-align: middle;
+      flex-shrink: 0;
+      padding: 0 0.5rem;
+    }
+
+    /* ABOUT */
+    #about {
+      padding: 9rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .sec-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .sec-label::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .sec-heading {
+      font-family: var(--font-head);
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 5rem;
+    }
+
+    .about-text p {
+      color: var(--text-soft);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 1.25rem;
+    }
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+    .about-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 2.5rem;
+    }
+    .chip {
+      padding: 0.28rem 0.8rem;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .chip:hover { border-color: var(--accent-border); color: var(--accent); }
+
+    .stats-col { display: flex; flex-direction: column; gap: 0; }
+    .stat-card {
+      padding: 1.75rem 2rem;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      background: var(--surface);
+      transition: background 0.25s, border-color 0.25s;
+      position: relative;
+    }
+    .stat-card:last-child { border-bottom: 1px solid var(--border); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s var(--ease);
+    }
+    .stat-card:hover { background: var(--surface-2); }
+    .stat-card:hover::before { transform: scaleY(1); }
+    .stat-num {
+      font-family: var(--font-head);
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .stat-lbl {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* BUSINESSES */
+    #businesses {
+      padding: 9rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .biz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .biz-header-right {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      max-width: 280px;
+      text-align: right;
+      line-height: 1.7;
+    }
+
+    .biz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+
+    .biz-card {
+      background: var(--surface);
+      padding: 2.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.35s, transform 0.35s var(--ease);
+      transform-style: preserve-3d;
+      cursor: none;
+    }
+    .biz-card:hover { background: var(--surface-2); }
+
+    /* Top accent line */
+    .biz-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+      transform: scaleX(0);
+      transition: transform 0.5s var(--ease);
+    }
+    .biz-card:hover::before { transform: scaleX(1); }
+
+    /* Radial glow */
+    .card-glow {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      top: -60px;
+      right: -60px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .biz-card:hover .card-glow { opacity: 1; }
+
+    /* Corner number */
+    .card-num {
+      position: absolute;
+      top: 2.75rem;
+      right: 2.75rem;
+      font-family: var(--font-head);
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      transition: color 0.35s;
+    }
+    .biz-card:hover .card-num { color: rgba(240,165,0,0.08); }
+
+    .biz-badges { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .badge {
+      padding: 0.18rem 0.55rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .b-live { background: rgba(34,197,94,0.1); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+    .b-role { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+
+    .biz-name {
+      font-family: var(--font-head);
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin-bottom: 0.85rem;
+      color: var(--text);
+    }
+    .biz-desc {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .biz-divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 1.75rem; }
+
+    .biz-facts { display: flex; flex-direction: column; gap: 0.8rem; }
+    .fact {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+    }
+    .fact-key {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding-top: 2px;
+    }
+    .fact-val { color: var(--text-soft); line-height: 1.55; }
+
+    .tech-stack { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 1.5rem; }
+    .tech {
+      padding: 0.18rem 0.5rem;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: var(--surface-3);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    /* CONTACT */
+    #contact {
+      padding: 9rem 0;
+      border-top: 1px solid var(--border);
+    }
+    #contact::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(240,165,0,0.04), transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      margin-top: 4.5rem;
+    }
+
+    .contact-intro {
+      font-size: 0.95rem;
+      color: var(--text-soft);
+      line-height: 1.85;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-links { display: flex; flex-direction: column; gap: 0.75rem; }
+    .clink {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .clink::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s var(--ease);
+    }
+    .clink:hover::before { transform: scaleY(1); }
+    .clink:hover { background: var(--surface); border-color: var(--border-hover); color: var(--text); }
+    .clink-ico { color: var(--accent); font-size: 0.95rem; flex-shrink: 0; }
+
+    .form-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+    }
+    .fg { margin-bottom: 1.25rem; }
+    .fl {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+    .fi, .ft {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.85rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+    .fi:focus, .ft:focus { border-color: var(--accent-border); }
+    .fi::placeholder, .ft::placeholder { color: var(--text-dim); }
+    .ft { min-height: 110px; }
+    .fsub {
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent);
+      color: #000;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: none;
+      cursor: none;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .fsub:hover { background: #ffc62e; }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 2;
+      padding: 1.75rem 0;
+      border-top: 1px solid var(--border);
+    }
+    .foot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .foot-copy { font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.05em; }
+    .foot-copy b { color: var(--accent); font-weight: 400; }
+    .foot-nav { display: flex; gap: 1.5rem; }
+    .foot-nav a {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .foot-nav a:hover { color: var(--accent); }
+
+    /* REVEAL */
+    .rv {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .rv.in { opacity: 1; transform: translateY(0); }
+    .rv.d1 { transition-delay: 0.1s; }
+    .rv.d2 { transition-delay: 0.2s; }
+    .rv.d3 { transition-delay: 0.3s; }
+    .rv.d4 { transition-delay: 0.4s; }
+
+    /* KEYFRAMES */
+    @keyframes fuUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 0.5; }
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    @keyframes spulse {
+      0%, 100% { transform: scaleY(1); opacity: 0.4; }
+      50% { transform: scaleY(0.75); opacity: 0.9; }
+    }
+    @keyframes mq {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .biz-grid { grid-template-columns: 1fr 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 3.5rem; }
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .ham { display: flex; }
+      .hero-name { font-size: clamp(3.5rem, 20vw, 5.5rem); }
+      .biz-grid { grid-template-columns: 1fr; }
+      .biz-header { flex-direction: column; }
+      .biz-header-right { text-align: left; max-width: 100%; }
+      .foot-row { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding: 0 1.25rem; }
+      .hero-btns { flex-direction: column; }
+      .card-num { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+  <canvas id="cv"></canvas>
+  <div class="grain"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="wrap">
+      <div class="nav-row">
+        <a href="#hero" class="nav-logo">P<b>.</b>M</a>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#businesses">Work</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="ham" id="ham" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mob-menu" id="mob">
+    <a href="#about" class="mlink">About</a>
+    <a href="#businesses" class="mlink">Work</a>
+    <a href="#contact" class="mlink">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="wrap">
+      <div class="hero-eyebrow">Jefferson Park, Chicago</div>
+      <h1 class="hero-name">
+        PATRICK
+        <span class="stroke">MIETKA</span>
+      </h1>
+      <p class="hero-sub">
+        <span id="tw"></span><span class="tw-cursor"></span>
+      </p>
+      <p class="hero-meta">DePaul University &nbsp;&#8226;&nbsp; Keeley Scholars Program &nbsp;&#8226;&nbsp; Finance</p>
+      <div class="hero-btns">
+        <a href="#businesses" class="btn-p">See My Work</a>
+        <a href="#contact" class="btn-s">Get in Touch</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span class="scroll-label">Scroll</span>
+      <div class="scroll-bar"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="mq-track" id="mq">
+      <span class="mq-item">Meta Advertising</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">GoHighLevel</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Performance Securities</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Epoxy Coatings</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Appointment Booking</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Quantitative Finance</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Lead Generation</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">ElevenLabs</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Speed to Lead</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Meta Advertising</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">GoHighLevel</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Performance Securities</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Epoxy Coatings</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Appointment Booking</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Quantitative Finance</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Lead Generation</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">ElevenLabs</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Speed to Lead</span><span class="mq-dot">&#9679;</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-label rv">About</div>
+      <h2 class="sec-heading rv">Operator.<br>Builder.<br>Student.</h2>
+      <div class="about-grid">
+        <div class="about-text rv">
+          <p>I am a sophomore finance major at DePaul University, enrolled in the <strong>Keeley Scholars Program</strong>. Most students my age are hunting for internships. I am building companies.</p>
+          <p>Since freshman year I have been running real businesses across <strong>digital marketing</strong>, <strong>home services</strong>, and <strong>financial markets</strong>. Three active companies. Four clients across the country. One operating model built on speed, accountability, and results.</p>
+          <p>My interest in <strong>quantitative finance</strong> shapes everything I build. Systems. Leverage. Capital allocation. I study markets and run operations the same way.</p>
+          <p>Based in <strong>Jefferson Park, Chicago</strong>. Operating coast to coast.</p>
+          <div class="about-chips">
+            <span class="chip">Lead Generation</span>
+            <span class="chip">Home Services</span>
+            <span class="chip">Meta Advertising</span>
+            <span class="chip">Financial Markets</span>
+            <span class="chip">Operations</span>
+            <span class="chip">Chicago</span>
+          </div>
+        </div>
+        <div class="stats-col rv d2">
+          <div class="stat-card">
+            <div class="stat-num">3</div>
+            <div class="stat-lbl">Active Companies</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">4</div>
+            <div class="stat-lbl">Clients Nationwide</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">2</div>
+            <div class="stat-lbl">Years Building</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" style="font-size:1.75rem; padding-top: 0.3rem;">Chicago</div>
+            <div class="stat-lbl">Home Base</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESSES -->
+  <section id="businesses">
+    <div class="wrap">
+      <div class="biz-header">
+        <div>
+          <div class="sec-label rv">Portfolio</div>
+          <h2 class="sec-heading rv">The Work</h2>
+        </div>
+        <p class="biz-header-right rv">Three distinct companies. One operating standard built on speed and results.</p>
+      </div>
+
+      <div class="biz-grid">
+
+        <!-- 01 Appointly -->
+        <div class="biz-card rv" id="bc1">
+          <div class="card-glow"></div>
+          <div class="card-num">01</div>
+          <div class="biz-badges">
+            <span class="badge b-live">Active</span>
+            <span class="badge b-role">Co-Founder</span>
+          </div>
+          <h3 class="biz-name">Appointly Solutions LLC</h3>
+          <p class="biz-desc">Full-funnel Meta ads appointment booking agency for home service contractors. We generate the lead, contact them immediately, and book them directly onto the client calendar. Client only shows up, runs the estimate, and collects payment.</p>
+          <div class="biz-divider"></div>
+          <div class="biz-facts">
+            <div class="fact">
+              <span class="fact-key">Model</span>
+              <span class="fact-val">Pay-per-appointment plus monthly retainer. We cover all Meta ad spend.</span>
+            </div>
+            <div class="fact">
+              <span class="fact-key">Clients</span>
+              <span class="fact-val">San Pro (Richmond VA), Diamond Group (Portland OR), Afab Services (Port St Lucie FL), Advanced Insulation Technology (Grand Rapids MI)</span>
+            </div>
+            <div class="fact">
+              <span class="fact-key">Partner</span>
+              <span class="fact-val">Co-operated with Jacob Mietka</span>
+            </div>
+          </div>
+          <div class="tech-stack">
+            <span class="tech">GoHighLevel</span>
+            <span class="tech">Meta Ads</span>
+            <span class="tech">Higgsfield</span>
+            <span class="tech">ElevenLabs</span>
+            <span class="tech">CapCut</span>
+          </div>
+        </div>
+
+        <!-- 02 GLEC -->
+        <div class="biz-card rv d1" id="bc2">
+          <div class="card-glow"></div>
+          <div class="card-num">02</div>
+          <div class="biz-badges">
+            <span class="badge b-live">Active</span>
+            <span class="badge b-role">Founder</span>
+          </div>
+          <h3 class="biz-name">Great Lakes Elite Coatings</h3>
+          <p class="biz-desc">Chicago-area epoxy garage floor coating company. Owner-operator model built and run in parallel with Appointly. Full control over sales, scheduling, and delivery in the Chicago metro market.</p>
+          <div class="biz-divider"></div>
+          <div class="biz-facts">
+            <div class="fact">
+              <span class="fact-key">Model</span>
+              <span class="fact-val">Full owner-operator. Direct-to-consumer residential and commercial coatings.</span>
+            </div>
+            <div class="fact">
+              <span class="fact-key">Market</span>
+              <span class="fact-val">Chicago, Illinois and surrounding suburbs</span>
+            </div>
+            <div class="fact">
+              <span class="fact-key">Category</span>
+              <span class="fact-val">Epoxy and polyaspartic garage floor coatings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 03 InPlay -->
+        <div class="biz-card rv d2" id="bc3">
+          <div class="card-glow"></div>
+          <div class="card-num">03</div>
+          <div class="biz-badges">
+            <span class="badge b-live">Active</span>
+            <span class="badge b-role">President + COO</span>
+          </div>
+          <h3 class="biz-name">InPlay Global</h3>
+          <p class="biz-desc">A regulated marketplace startup building Performance Securities tied to sports team performance. Creating the infrastructure for a new financial asset class at the intersection of capital markets and sports.</p>
+          <div class="biz-divider"></div>
+          <div class="biz-facts">
+            <div class="fact">
+              <span class="fact-key">Product</span>
+              <span class="fact-val">Performance Securities: tradeable instruments tied to team outcomes on regulated markets</span>
+            </div>
+            <div class="fact">
+              <span class="fact-key">Stage</span>
+              <span class="fact-val">Startup building toward regulatory compliance and market launch</span>
+            </div>
+            <div class="fact">
+              <span class="fact-key">Founder</span>
+              <span class="fact-val">Troy Kane</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-label rv">Contact</div>
+      <h2 class="sec-heading rv">Let's Talk</h2>
+      <div class="contact-grid">
+        <div class="rv">
+          <p class="contact-intro">If you are a contractor looking to fill your calendar, a founder looking for an operator, or someone who wants to connect and talk business, reach out directly.</p>
+          <div class="contact-links">
+            <a href="mailto:patrickmietka23@gmail.com" class="clink">
+              <span class="clink-ico">&#9993;</span>
+              patrickmietka23@gmail.com
+            </a>
+            <a href="https://linkedin.com/in/patrickmietka" target="_blank" rel="noopener" class="clink">
+              <span class="clink-ico">&#9670;</span>
+              Connect on LinkedIn
+            </a>
+          </div>
+        </div>
+        <div class="form-box rv d1">
+          <form id="cform">
+            <div class="fg">
+              <label class="fl" for="fn">Name</label>
+              <input class="fi" type="text" id="fn" placeholder="Your name" required>
+            </div>
+            <div class="fg">
+              <label class="fl" for="fe">Email</label>
+              <input class="fi" type="email" id="fe" placeholder="your@email.com" required>
+            </div>
+            <div class="fg">
+              <label class="fl" for="fm">Message</label>
+              <textarea class="ft" id="fm" placeholder="What are you working on?" required></textarea>
+            </div>
+            <button type="submit" class="fsub" id="fsub">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-row">
+        <p class="foot-copy">Patrick Mietka &nbsp;<b>2025</b></p>
+        <nav class="foot-nav">
+          <a href="#hero">Top</a>
+          <a href="#about">About</a>
+          <a href="#businesses">Work</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ---- CANVAS PARTICLES ---- */
+    const cv = document.getElementById('cv');
+    const cx = cv.getContext('2d');
+    let pts = [], mx = -999, my = -999;
+
+    function resizeCv() {
+      cv.width = innerWidth;
+      cv.height = innerHeight;
+    }
+
+    class Pt {
+      constructor() { this.init(); }
+      init() {
+        this.x = Math.random() * cv.width;
+        this.y = Math.random() * cv.height;
+        this.vx = (Math.random() - 0.5) * 0.25;
+        this.vy = (Math.random() - 0.5) * 0.25;
+        this.r = Math.random() * 1.2 + 0.4;
+        this.a = Math.random() * 0.25 + 0.04;
+      }
+      tick() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > cv.width) this.vx *= -1;
+        if (this.y < 0 || this.y > cv.height) this.vy *= -1;
+        const dx = mx - this.x, dy = my - this.y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 100) {
+          const f = (100 - d) / 100 * 0.004;
+          this.vx -= dx * f; this.vy -= dy * f;
+        }
+        const spd = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+        if (spd > 1.2) { this.vx *= 0.95; this.vy *= 0.95; }
+      }
+      draw() {
+        cx.beginPath();
+        cx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+        cx.fillStyle = `rgba(240,165,0,${this.a})`;
+        cx.fill();
+      }
+    }
+
+    function initPts() {
+      pts = [];
+      const n = Math.min(Math.floor(cv.width * cv.height / 10000), 90);
+      for (let i = 0; i < n; i++) pts.push(new Pt());
+    }
+
+    function drawLines() {
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i+1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < 110) {
+            cx.beginPath();
+            cx.moveTo(pts[i].x, pts[i].y);
+            cx.lineTo(pts[j].x, pts[j].y);
+            cx.strokeStyle = `rgba(240,165,0,${(1-d/110)*0.07})`;
+            cx.lineWidth = 0.5;
+            cx.stroke();
+          }
+        }
+      }
+    }
+
+    function loop() {
+      cx.clearRect(0, 0, cv.width, cv.height);
+      pts.forEach(p => { p.tick(); p.draw(); });
+      drawLines();
+      requestAnimationFrame(loop);
+    }
+
+    resizeCv(); initPts(); loop();
+    window.addEventListener('resize', () => { resizeCv(); initPts(); });
+    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    /* ---- CURSOR ---- */
+    const dot = document.getElementById('cur-dot');
+    const ring = document.getElementById('cur-ring');
+    let dx = 0, dy = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { dx = e.clientX; dy = e.clientY; });
+    (function curLoop() {
+      dot.style.left = dx+'px'; dot.style.top = dy+'px';
+      rx += (dx-rx)*0.1; ry += (dy-ry)*0.1;
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      requestAnimationFrame(curLoop);
+    })();
+    document.querySelectorAll('a,button,.biz-card,.stat-card,.chip').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+    if ('ontouchstart' in window) {
+      dot.style.display = 'none'; ring.style.display = 'none';
+      document.body.style.cursor = 'auto';
+    }
+
+    /* ---- NAV SCROLL ---- */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('s', scrollY > 60), { passive: true });
+
+    /* ---- HAMBURGER ---- */
+    const ham = document.getElementById('ham');
+    const mob = document.getElementById('mob');
+    ham.addEventListener('click', () => {
+      ham.classList.toggle('on');
+      mob.classList.toggle('on');
+    });
+    document.querySelectorAll('.mlink').forEach(l => l.addEventListener('click', () => {
+      ham.classList.remove('on'); mob.classList.remove('on');
+    }));
+
+    /* ---- TYPEWRITER ---- */
+    const phrases = [
+      'Finance student. Founder. Operator.',
+      'Building real businesses from Chicago.',
+      'Three companies. One standard.',
+      'Speed to lead. Always.'
+    ];
+    let pi = 0, ci = 0, del = false;
+    const tw = document.getElementById('tw');
+    function type() {
+      const ph = phrases[pi];
+      if (del) {
+        tw.textContent = ph.slice(0, --ci);
+        if (ci === 0) { del = false; pi = (pi+1) % phrases.length; setTimeout(type, 400); return; }
+        setTimeout(type, 32);
+      } else {
+        tw.textContent = ph.slice(0, ++ci);
+        if (ci === ph.length) { setTimeout(() => { del = true; type(); }, 2400); return; }
+        setTimeout(type, 58);
+      }
+    }
+    setTimeout(type, 1300);
+
+    /* ---- SCROLL REVEAL ---- */
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+
+    /* ---- CARD TILT ---- */
+    document.querySelectorAll('.biz-card').forEach(c => {
+      c.addEventListener('mousemove', e => {
+        const r = c.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        c.style.transform = `perspective(900px) rotateX(${y*-7}deg) rotateY(${x*7}deg) translateZ(6px)`;
+      });
+      c.addEventListener('mouseleave', () => {
+        c.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateZ(0)';
+      });
+    });
+
+    /* ---- MAGNETIC BTNS ---- */
+    document.querySelectorAll('.btn-p,.btn-s,.fsub').forEach(b => {
+      b.addEventListener('mousemove', e => {
+        const r = b.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width/2) * 0.22;
+        const y = (e.clientY - r.top - r.height/2) * 0.22;
+        b.style.transform = `translate(${x}px,${y}px)`;
+      });
+      b.addEventListener('mouseleave', () => b.style.transform = '');
+    });
+
+    /* ---- SMOOTH SCROLL ---- */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    /* ---- FORM ---- */
+    document.getElementById('cform').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('fsub');
+      const name = document.getElementById('fn').value;
+      const email = document.getElementById('fe').value;
+      const msg = document.getElementById('fm').value;
+      btn.textContent = 'Sent!';
+      btn.style.background = '#22c55e';
+      btn.style.color = '#fff';
+      const sub = encodeURIComponent('Inquiry from ' + name);
+      const body = encodeURIComponent('From: ' + name + '\nEmail: ' + email + '\n\n' + msg);
+      window.location.href = 'mailto:patrickmietka23@gmail.com?subject=' + sub + '&body=' + body;
+      setTimeout(() => {
+        btn.textContent = 'Send Message';
+        btn.style.background = ''; btn.style.color = '';
+        this.reset();
+      }, 3500);
+    });
+  </script>
+</body>
+</html>
