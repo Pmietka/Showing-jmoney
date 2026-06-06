@@ -10,20 +10,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #080808;
-      --surface: #0e0e0e;
-      --surface-2: #141414;
-      --surface-3: #1c1c1c;
+      --bg: #121212;
+      --surface: #1a1a1a;
+      --surface-2: #212121;
+      --surface-3: #2a2a2a;
       --accent: #F0A500;
       --accent-dim: rgba(240, 165, 0, 0.07);
       --accent-border: rgba(240, 165, 0, 0.22);
-      --accent-glow: rgba(240, 165, 0, 0.12);
-      --text: #f0f0f0;
-      --text-muted: #5e5e5e;
-      --text-soft: #999;
-      --text-dim: #3a3a3a;
-      --border: rgba(255, 255, 255, 0.055);
-      --border-hover: rgba(255, 255, 255, 0.1);
+      --accent-glow: rgba(240, 165, 0, 0.1);
+      --text: #ebebeb;
+      --text-muted: #888;
+      --text-soft: #b0b0b0;
+      --text-dim: #666;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-hover: rgba(255, 255, 255, 0.16);
       --font-head: 'Space Grotesk', sans-serif;
       --font-body: 'Inter', sans-serif;
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -90,7 +90,7 @@
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      opacity: 0.025;
+      opacity: 0.015;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
       background-size: 180px 180px;
     }
@@ -112,7 +112,7 @@
     }
     nav.s {
       padding: 1rem 0;
-      background: rgba(8,8,8,0.88);
+      background: rgba(18,18,18,0.92);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border-bottom-color: var(--border);
@@ -176,7 +176,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(8,8,8,0.97);
+      background: rgba(18,18,18,0.97);
       z-index: 899;
       flex-direction: column;
       justify-content: center;
@@ -212,7 +212,7 @@
       right: 5%;
       width: 700px;
       height: 700px;
-      background: radial-gradient(circle, rgba(240,165,0,0.045) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(240,165,0,0.025) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -532,7 +532,7 @@
       line-height: 1.7;
     }
 
-    .biz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+    .biz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
 
     .biz-card {
       background: var(--surface);
@@ -814,7 +814,6 @@
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
-      .biz-grid { grid-template-columns: 1fr 1fr; }
       .about-grid { grid-template-columns: 1fr; gap: 3.5rem; }
       .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     }
@@ -892,22 +891,22 @@
     <div class="mq-track" id="mq">
       <span class="mq-item">Meta Advertising</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">GoHighLevel</span><span class="mq-dot">&#9679;</span>
-      <span class="mq-item">Performance Securities</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Epoxy Coatings</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Appointment Booking</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Quantitative Finance</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Lead Generation</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">ElevenLabs</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Speed to Lead</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Home Services</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Meta Advertising</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">GoHighLevel</span><span class="mq-dot">&#9679;</span>
-      <span class="mq-item">Performance Securities</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Epoxy Coatings</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Appointment Booking</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Quantitative Finance</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Lead Generation</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">ElevenLabs</span><span class="mq-dot">&#9679;</span>
       <span class="mq-item">Speed to Lead</span><span class="mq-dot">&#9679;</span>
+      <span class="mq-item">Home Services</span><span class="mq-dot">&#9679;</span>
     </div>
   </div>
 
@@ -919,7 +918,7 @@
       <div class="about-grid">
         <div class="about-text rv">
           <p>I am a sophomore finance major at DePaul University, enrolled in the <strong>Keeley Scholars Program</strong>. Most students my age are hunting for internships. I am building companies.</p>
-          <p>Since freshman year I have been running real businesses across <strong>digital marketing</strong>, <strong>home services</strong>, and <strong>financial markets</strong>. Three active companies. Four clients across the country. One operating model built on speed, accountability, and results.</p>
+          <p>Since freshman year I have been running real businesses across <strong>digital marketing</strong> and <strong>home services</strong>. Two active companies. Four clients across the country. One operating model built on speed, accountability, and results.</p>
           <p>My interest in <strong>quantitative finance</strong> shapes everything I build. Systems. Leverage. Capital allocation. I study markets and run operations the same way.</p>
           <p>Based in <strong>Jefferson Park, Chicago</strong>. Operating coast to coast.</p>
           <div class="about-chips">
@@ -933,7 +932,7 @@
         </div>
         <div class="stats-col rv d2">
           <div class="stat-card">
-            <div class="stat-num">3</div>
+            <div class="stat-num">2</div>
             <div class="stat-lbl">Active Companies</div>
           </div>
           <div class="stat-card">
@@ -961,7 +960,7 @@
           <div class="sec-label rv">Portfolio</div>
           <h2 class="sec-heading rv">The Work</h2>
         </div>
-        <p class="biz-header-right rv">Three distinct companies. One operating standard built on speed and results.</p>
+        <p class="biz-header-right rv">Two focused companies. One operating standard built on speed and results.</p>
       </div>
 
       <div class="biz-grid">
@@ -1027,32 +1026,6 @@
           </div>
         </div>
 
-        <!-- 03 InPlay -->
-        <div class="biz-card rv d2" id="bc3">
-          <div class="card-glow"></div>
-          <div class="card-num">03</div>
-          <div class="biz-badges">
-            <span class="badge b-live">Active</span>
-            <span class="badge b-role">President + COO</span>
-          </div>
-          <h3 class="biz-name">InPlay Global</h3>
-          <p class="biz-desc">A regulated marketplace startup building Performance Securities tied to sports team performance. Creating the infrastructure for a new financial asset class at the intersection of capital markets and sports.</p>
-          <div class="biz-divider"></div>
-          <div class="biz-facts">
-            <div class="fact">
-              <span class="fact-key">Product</span>
-              <span class="fact-val">Performance Securities: tradeable instruments tied to team outcomes on regulated markets</span>
-            </div>
-            <div class="fact">
-              <span class="fact-key">Stage</span>
-              <span class="fact-val">Startup building toward regulatory compliance and market launch</span>
-            </div>
-            <div class="fact">
-              <span class="fact-key">Founder</span>
-              <span class="fact-val">Troy Kane</span>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
@@ -1131,8 +1104,8 @@
         this.y = Math.random() * cv.height;
         this.vx = (Math.random() - 0.5) * 0.25;
         this.vy = (Math.random() - 0.5) * 0.25;
-        this.r = Math.random() * 1.2 + 0.4;
-        this.a = Math.random() * 0.25 + 0.04;
+        this.r = Math.random() * 1.0 + 0.3;
+        this.a = Math.random() * 0.12 + 0.03;
       }
       tick() {
         this.x += this.vx;
@@ -1171,7 +1144,7 @@
             cx.beginPath();
             cx.moveTo(pts[i].x, pts[i].y);
             cx.lineTo(pts[j].x, pts[j].y);
-            cx.strokeStyle = `rgba(240,165,0,${(1-d/110)*0.07})`;
+            cx.strokeStyle = `rgba(240,165,0,${(1-d/110)*0.045})`;
             cx.lineWidth = 0.5;
             cx.stroke();
           }
@@ -1211,8 +1184,8 @@
     }
 
     /* ---- NAV SCROLL ---- */
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => nav.classList.toggle('s', scrollY > 60), { passive: true });
+    const navbar = document.getElementById('nav');
+    window.addEventListener('scroll', () => navbar.classList.toggle('s', scrollY > 60), { passive: true });
 
     /* ---- HAMBURGER ---- */
     const ham = document.getElementById('ham');
@@ -1229,7 +1202,7 @@
     const phrases = [
       'Finance student. Founder. Operator.',
       'Building real businesses from Chicago.',
-      'Three companies. One standard.',
+      'Two companies. One standard.',
       'Speed to lead. Always.'
     ];
     let pi = 0, ci = 0, del = false;
